@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Document</title>
+    <style>
+        .button {
+          background-color: #000000;
+          border: none;
+          color: white;
+          padding: 15px 32px;
+          text-align: center;
+          text-decoration: none;
+          display: inline-block;
+          font-size: 16px;
+          margin: 4px 2px;
+          cursor: pointer;
+        }
+    </style>
+</head>
+<body style="background: -webkit-linear-gradient(right, red , blue);">
+    <header><h1 style="text-align: center;color: white;">Welcome! Signup or Login to get started</h1></header>
+    <div style="padding-left: 650px;padding-top: 250px;">
+        <button class="button">Login</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <button class="button"><a href="{{ url_for('form1')}}" style="text-decoration: none; color: rgb(255, 255, 255);"> Signup </a></button>
+    </div>
+    
+    
+</body>
+</html>
