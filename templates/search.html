@@ -1,0 +1,30 @@
+{% extends "layout1.html" %}
+
+
+
+{% block body %}
+
+<table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Results</th>
+        
+        
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in users %}
+      <tr>
+        {% if user.title==name %}
+        
+            <td>{{user.title}}</td>
+
+        {% endif %}
+        
+      </tr>
+      {% endfor %}
+      
+    </tbody>
+  </table>
+
+{% endblock %}

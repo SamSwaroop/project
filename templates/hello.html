@@ -1,17 +1,111 @@
-{% extends "layout.html" %}
+{% extends "layout1.html" %}
 
 {% block heading %}
     Home page
 {% endblock %}
 
 {% block body %}
-    <h1>Welcome,{{name}}<br>
+    <!-- <h1>Welcome,{{name}}<br>
     Your password is {{password}}<br>
     your Email ID is {{mailid}}<br>
     your Phone number is {{phone}}<br>
     your Date of birth is {{DOB}}<br>
 
 
-    </h1>
+    </h1> -->
+    <!-- {% for user in users %}
+        {% if user.username == names and user.password == passwords%}
+            <h1>Welcome to Home page,{{names}}</h1>
+        {% else %}
+            <h1>Invalid user</h1>
+            <h1><a href="{{url_for('form1')}}"> Register</a></h1>
+
+        {% endif %}
+        
+    {% endfor %} -->
+    <!-- <div style="width:50%">
+        
+        
+    </div> -->
+    <h1>Welcome {{names}}</h1>&nbsp;&nbsp;&nbsp;&nbsp;<button class="button" style="text-decoration: none; color: rgb(255, 255, 255);"> <a href="{{url_for('first')}}"> Logout </a></button>
+    
+    
+
+        <div class="note">
+            <h1>Search</h1>
+        </div>
+    <!-- <form action="/search" method="post">
+        
+        <div class="form-content">
+            <div class="row" style="padding-left: 40%;">
+                
+                <div class="form-group">
+                    <input type="text" name="search" placeholder="Search" class="form-control"required ><br>
+                </div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                
+                <button class="button" >Submit</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </div>
+            <button class="btnSubmit" >Submit</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <button type="button" class="btnSubmit1" style="text-decoration: none;"><a href="{{ url_for('first')}}" > Go back </button> -->
+                <br>
+                <br>
+                <form class="example" action="/search" style="margin:auto;max-width:300px" method="post">
+                    <input type="text" placeholder="Search.." name="search" class="form-control"required>
+                    <button type="submit" style="width: 240px;">Search</button>
+                  <br>
+                  <br>
+                  <br>
+                </form>
+                <table class="table">
+                    <thead class="thead-dark" style="margin: auto;">
+                        <th style="margin: auto;"><h3 >Title of the book</h3></th>
+                        <th style="margin: auto;"><h3 >Author</h3></th>
+                        <th style="margin: auto;"><h3 >Year</h3></th>
+                      <tr>
+
+                        
+                        <br>
+                        <br>
+                        <br>
+                        
+                        
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for user in users %}
+                      <tr>
+                        {% if user.isbn==name or user.title==name or user.author==name or user.year==name or usr %}
+                        
+                            <td><h4>{{user.title}}</h4></td>
+                            <td><h4>{{user.author}}</h4></td>
+                            <td><h4>{{user.year}}</h4></td>
+
+                        
+
+                        {% endif %}
+                        
+                        
+                      
+                      {% endfor %}
+                        
+
+
+                    </tr>
+                      
+                    </tbody>
+                  </table>
+                <br>
+                <br>
+                <br>
+                <br>
+        <!-- </div> -->
+
+        
+        
+    
+    
+    
+    
+    
 
 {% endblock %}

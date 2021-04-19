@@ -3,7 +3,11 @@
 
 
 {% block body %}
-    <form action="{{ url_for('form2') }}" method="post">
+
+
+{% if flag==1 %}
+<h1 style="padding-left: 26%;"> Invalid User, Please register  to continue </h1>
+    <form action="/form2" method="post">
         <div class="note">
             <h1>Registration Form</h1>
         </div>
@@ -37,7 +41,7 @@
                 <br>
             </div>
             <button class="btnSubmit" >Submit</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <button type="button" class="btnSubmit1" style="text-decoration: none;"><a href="{{ url_for('first')}}" > Go back </button>
+            <!-- <button type="button" class="btnSubmit1" style="text-decoration: none;"><a href="{{ url_for('first')}}" > Go back </button> -->
 
 
         </div>
@@ -47,6 +51,59 @@
 
         
     </form>
+
+{% else %}
+
+
+<form action="/form2" method="post">
+    <div class="note">
+        <h1>Registration Form</h1>
+    </div>
+    <div class="form-content">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <input type="text" name="name" placeholder="Username" class="form-control"required><br>
+                </div>
+                <div class="form-group">
+                    <input type="password" name="password" placeholder="Password" class="form-control" required><br>
+                </div>
+                <div class="form-group">
+                    <input type="text" name="emailid" placeholder="Email ID" class="form-control" required><br>
+                </div>
+                
+            </div>
+            <br>
+            <br>
+    
+            <div class="col-md-6" style="padding-right: 90px;">
+                <div class="form-group">
+                    <input type="tel" name="phonenumber" placeholder="Phone number" class="form-control" required>
+                </div>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <div class="form-group">
+                    <input type="date" id="birthday" name="birthday" placeholder="Choose date of birth" class="form-control"><br>
+                </div>
+            </div>
+            <br>
+            <br>
+        </div>
+        <button class="btnSubmit" >Submit</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <!-- <button type="button" class="btnSubmit1" style="text-decoration: none;"><a href="{{ url_for('first')}}" > Go back </button> -->
+
+
+    </div>
+    
+
+
+
+    
+</form>
+
+{% endif %}
+
+
+
 {% endblock %}
 
 
