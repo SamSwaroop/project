@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block body %}
+
     <!-- <h1>Welcome,{{name}}<br>
     Your password is {{password}}<br>
     your Email ID is {{mailid}}<br>
@@ -27,7 +28,7 @@
         
         
     </div> -->
-    <h1>Welcome {{names}}</h1>&nbsp;&nbsp;&nbsp;&nbsp;<button class="button" style="text-decoration: none; color: rgb(255, 255, 255);"> <a href="{{url_for('first')}}"> Logout </a></button>
+    <!-- <h1>Welcome {{names}}</h1>&nbsp;&nbsp;&nbsp;&nbsp;<button class="button" style="text-decoration: none; color: rgb(255, 255, 255);"> <a href="{{url_for('first')}}"> Logout </a></button> -->
     
     
 
@@ -49,6 +50,8 @@
             <button type="button" class="btnSubmit1" style="text-decoration: none;"><a href="{{ url_for('first')}}" > Go back </button> -->
                 <br>
                 <br>
+                {% if flag==1 %}
+                <h1 style="padding-left: 17%;"> User's review already exists,enter new user's review </h1>
                 <form class="example" action="/search" style="margin:auto;max-width:300px" method="post">
                     <input type="text" placeholder="Search.." name="search" class="form-control"required>
                     <button type="submit" style="width: 240px;">Search</button>
@@ -59,8 +62,8 @@
                 <table class="table">
                     <thead class="thead-dark" style="margin: auto;">
                         <th style="margin: auto;"><h3 >Title of the book</h3></th>
-                        <th style="margin: auto;"><h3 >Author</h3></th>
-                        <th style="margin: auto;"><h3 >Year</h3></th>
+                        <th style="margin: auto;"><h3 >Add to shelf</h3></th>
+                        
                       <tr>
 
                         
@@ -74,11 +77,76 @@
                     <tbody>
                       {% for user in users %}
                       <tr>
-                        {% if user.isbn==name or user.title==name or user.author==name or user.year==name or usr %}
+                        {% if user.isbn==name or user.title==name or user.author==name or user.year==name %}
                         
-                            <td><h4>{{user.title}}</h4></td>
-                            <td><h4>{{user.author}}</h4></td>
-                            <td><h4>{{user.year}}</h4></td>
+                            <td><h4><a href="{{ url_for('details',id=user.isbn)}}" style="text-decoration: none; color: rgb(0, 0, 0);" id="{{user.isbn}}" >{{user.isbn}}</a></h4></td>
+                            <!-- <td><button>Add to shelf</button></td> -->
+                            <td><button>Add to shelf</button></td>
+
+                        {% endif %}
+                        
+                        
+                        
+                      
+                      {% endfor %}
+                        
+
+
+                    </tr>
+                      
+                    </tbody>
+                  </table>
+
+                  {% else %}
+                    
+                  <form  action="/bookshelf/{{session['name']}}" method="POST">
+
+                    <h1>Welcome {{session['name']}}</h1>&nbsp;&nbsp;&nbsp;&nbsp;<button class="button" style="text-decoration: none; color: rgb(255, 255, 255);"> <a href="{{url_for('first')}}"> Logout </a></button>
+                    <button type="submit" style="width: 240px;">My BookShelf</button>
+                    
+                  </form>
+                  <ol>
+                    {% for i in u %}
+                      {% if i.user==n %}
+                        <li>{{i.title}}</li>
+                        
+                        
+                      {% endif %}
+                    {% endfor %}
+                  </ol>
+                  
+                  <form class="example" action="/search" style="margin:auto;max-width:300px" method="post">
+                    
+                    
+                    
+                    <input type="text" placeholder="Search.." name="search" class="form-control"required>
+                    <button type="submit" style="width: 240px;">Search</button>
+                  <br>
+                  <br>
+                  <br>
+                </form>
+                <table class="table">
+                    <thead class="thead-dark" style="margin: auto;">
+                        <th style="margin: auto;"><h3 >Title of the book</h3></th>
+                        
+                      <tr>
+
+                        
+                        <br>
+                        <br>
+                        <br>
+                        
+                        
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for user in users %}
+                      <tr>
+                        {% if user.isbn==name or user.title==name or user.author==name or user.year==name %}
+                        
+                        <td><h4><a href="{{ url_for('details',id=user.isbn)}}" style="text-decoration: none; color: rgb(0, 0, 0);" id="{{user.isbn}}" >{{user.title}}</a></h4></td>
+                        <!-- <td><button>Add to shelf</button></td> -->
+                        <td><button><a href="{{url_for('last',title=user.title)}}">Add to Shelf</a></button></td>
 
                         
 
@@ -94,6 +162,9 @@
                       
                     </tbody>
                   </table>
+
+                  {% endif %}
+
                 <br>
                 <br>
                 <br>
@@ -109,3 +180,9 @@
     
 
 {% endblock %}
+
+
+
+
+
+

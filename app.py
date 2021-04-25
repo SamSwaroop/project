@@ -81,6 +81,11 @@ db.init_app(app)
 def first() :
     # db.create_all()
     return render_template("index1.html")
+
+# def last():
+#     j=shelf(user=sname,title=details)
+#     db.session.add(j)
+#     db.session.commit()
     
         
 
@@ -92,10 +97,10 @@ def form1():
 
 @app.route('/form2',methods=["POST"])
 def form2():
-    name=request.form.get("name")
+    session['name']=request.form.get("name")
     salt = uuid.uuid4().hex
     password=request.form.get("password")
-    PASS=hashlib.sha512(password.encode('utf-8') + salt.encode('utf-8')).hexdigest()
+    #PASS=hashlib.sha512(password.encode('utf-8') + salt.encode('utf-8')).hexdigest()
     emailid=request.form.get("emailid")
     phoneNo=request.form.get("phonenumber")
     dob=request.form.get("birthday")
@@ -104,7 +109,7 @@ def form2():
 
     f=datetime.now()
     # current_time = now.strftime("%H:%M:%S")
-    m=Test(username=name,password=PASS,email=emailid,phone=phoneNo,dob=dob,timestamp=f)
+    m=Test(username=session['name'],password=password,email=emailid,phone=phoneNo,dob=dob,timestamp=f)
     db.session.add(m)
     db.session.commit()
 
@@ -112,7 +117,7 @@ def form2():
     
     
 
-    return render_template("hello.html",names=name)
+    return render_template("hello.html",names=session['name'])
 
     # m=Test("Sam","123","samswaroop97@gmail.com","9515226365","18-11-1997")
     # db.session.add(m)
@@ -124,7 +129,7 @@ def form3():
 
 @app.route('/login',methods=["POST"])
 def login():
-    name=request.form.get("name")
+    #name=request.form.get("name")
     session['name']=request.form.get("name")
     salt = uuid.uuid4().hex
     password=request.form.get("password")
@@ -133,8 +138,8 @@ def login():
     for user in users:
         j=user.username
         k=user.password
-        if j==name and k==password:
-            return render_template("hello.html",names=name)
+        if 'name' in session and k==password:
+            return render_template("hello.html",names=session['name'])
         else:
             # flash('Invalid user')
             continue
@@ -181,9 +186,93 @@ def admin():
 @app.route('/search',methods=["POST"])
 def search():
     name=request.form.get("search")
-    usr=Admin.query.filter(Admin.isbn.like(f'{name}%'))
-    print(usr)
-    return render_template('hello.html',users=Admin.query.all(),name=name,usr=usr)
+    # usr=Admin.query.filter(Admin.isbn.like(f'{name}%'))
+    # print(usr)
+    return render_template('hello.html',users=Admin.query.all(),name=name)
+
+
+@app.route('/details/<string:id>')
+def details(id):
+    print(id)
+    # details=Admin.query.get(f'{id}')
+    usr=Admin.query.all()
+    for i in usr:
+        if id == i.isbn:
+            s=i.isbn
+            p=i.author
+            d=i.year
+            e=i.title
+
+    return render_template('details.html',details=e,s=s,p=p,d=d)
+
+@app.route('/details1/<string:s>/<string:details>/<string:sname>', methods=['POST'])
+def details1(s,details,sname):
+    #usr=request.form.get('user')
+    flag1=0
+    flag=0
+    star=request.form.get('stars')
+    name=request.form.get('review')
+    response= request.form.get('shelf')
+    a=Review.query.all()
+    for i in a:
+        if i.user==sname and i.isbn==s:
+            return render_template('hello.html',flag=1)
+   
+    g=Review(user=sname,isbn=s,rating=star,review=name)
+    db.session.add(g)
+    db.session.commit()
+    if response=="Yes":
+        j=shelf(user=sname,title=details)
+        db.session.add(j)
+        db.session.commit()
+        return render_template('rating.html',s=s,details=details,sname=sname)
+    else:
+        return render_template('rating.html',s=s,details=details,sname=sname)
+
+    
+    return render_template('rating.html',s=s,details=details,sname=sname)
+
+
+@app.route('/last/<string:title>')
+def last(title):
+    j=shelf(user=session['name'],title=title)
+    db.session.add(j)
+    db.session.commit()
+    return render_template('hello.html')
+
+
+
+
+# @app.route('/last')
+# def last():
+#     j=shelf(user=sname,title=details)
+#     db.session.add(j)
+#     db.session.commit()
+
+
+
+
+
+
+@app.route('/bookshelf/<string:names>', methods=['POST'])
+def bookshelf(names):
+    s=shelf.query.all()
+
+    return render_template("hello.html",n=names,u=s)
+
+
+# @app.route('/last/<string:sname>/<string:details>')
+# def last(sname,details):
+#     j=shelf(user=sname,title=details)
+#     db.session.add(j)
+#     db.session.commit()
+#     redirect('details')
+    
+
+
+
+
+
 
 if __name__ == "__main__" :
 
