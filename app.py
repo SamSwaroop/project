@@ -261,6 +261,24 @@ def bookshelf(names):
     return render_template("hello.html",n=names,u=s)
 
 
+@app.route('/delete/<string:id>')
+def delete(id):
+    print(id)
+    s=shelf.query.all()
+    for i in s:
+        if i.user==session['name'] and i.title==id:
+            shelf.query.filter(shelf.user==session['name'],shelf.title==id).delete()
+            db.session.commit()
+    return render_template('hello.html',u=s,n=session['name'])
+
+
+
+
+@app.route('/home')
+def home():
+    d=shelf.query.all()
+    return render_template('hello.html')
+
 # @app.route('/last/<string:sname>/<string:details>')
 # def last(sname,details):
 #     j=shelf(user=sname,title=details)

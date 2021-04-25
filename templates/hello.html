@@ -33,7 +33,7 @@
     
 
         <div class="note">
-            <h1>Search</h1>
+            <h1>Home page</h1>
         </div>
     <!-- <form action="/search" method="post">
         
@@ -59,10 +59,10 @@
                   <br>
                   <br>
                 </form>
-                <table class="table">
-                    <thead class="thead-dark" style="margin: auto;">
-                        <th style="margin: auto;"><h3 >Title of the book</h3></th>
-                        <th style="margin: auto;"><h3 >Add to shelf</h3></th>
+                <table class="table" style="width: 50%;">
+                    <thead class="thead-dark" >
+                        <th><h3 >Title of the book</h3></th>
+                    
                         
                       <tr>
 
@@ -108,7 +108,7 @@
                   <ol>
                     {% for i in u %}
                       {% if i.user==n %}
-                        <li>{{i.title}}</li>
+                        <li>{{i.title}}<button><a href="/delete/{{i.title}}">Delete</a></button></li>
                         
                         
                       {% endif %}
