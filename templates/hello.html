@@ -108,13 +108,15 @@
                   <ol>
                     {% for i in u %}
                       {% if i.user==n %}
-                        <li>{{i.title}}<button><a href="/delete/{{i.title}}">Delete</a></button></li>
+                        <li>{{i.title}}&nbsp;<button><a href="/delete/{{i.title}}">Delete</a></button></li>
                         
                         
                       {% endif %}
                     {% endfor %}
                   </ol>
-                  
+                  <br>
+                  <h3>{{a}}</h3>
+                  <br>
                   <form class="example" action="/search" style="margin:auto;max-width:300px" method="post">
                     
                     

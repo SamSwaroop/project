@@ -1,305 +1,104 @@
-from datetime import timedelta,date
-import psycopg2
-import hashlib, uuid
-from flask import Flask,render_template,request,session,flash,redirect,url_for
-from flask_session import Session
-from datetime import datetime
-from markupsafe import escape
-
-
-
-
-
-
 from model import *
+import os
 
 
+from flask import Flask, session, render_template, request, session, flash, redirect, url_for, jsonify
+from flask_session import Session
+from sqlalchemy import create_engine, or_
+from sqlalchemy.orm import scoped_session, sessionmaker
 
-app=Flask(__name__)
+app = Flask(__name__)
+
+
+# Configure session to use filesystem
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+Session(app)
+
 
 app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql://postgres:samswaroop@localhost:5432/postgres'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 app.secret_key = "1c488f4b4a21cd7fbc5007664656985c2459b2362cf1f88d44b97e750b0c14b2cf7bc7b792d3f45db"
-app.permanent_session_lifetime = timedelta(minutes=30)
-
-
-
-
-
 
 db.init_app(app)
 
-# @app.route('/')
-# def index():
-#     now=datetime.datetime.now()
-#     new_year=now.month == 1 and now.day == 1
-#     return render_template("index.html",new_year=new_year)
+
+@app.route("/")
+def index():
+
+    return render_template('search.html')
 
 
-# @app.route('/index')
-# def first():
-#     name="Sam"
-#     return render_template("index.html",headline=name)
-
-
-# @app.route('/first')
-# def first1():
-#     return "Goodbye"
-
-# @app.route('/second')
-# def second1():
-#     d=['Sam','Vishal','Mohan','Sai Kiran']
-#     return render_template("second1.html",name=d)
-
-# @app.route('/URL1')
-# def Nav1():
-#     return render_template("URLnav1.html")
-
-# @app.route('/URL2')
-# def Nav2():
-#     return render_template("URLnav2.html")
-
-# @app.route('/nav1')
-# def navigation1():
-#     return render_template("navigation1.html")
-
-# @app.route('/nav2')
-# def navigation2():
-#     return render_template("navigation2.html")
-
-
-
-# @app.route('/')
-# def Nav1():
-#     return render_template("index1.html")
-
-# @app.route('/URL1')
-# def Nav2():
-#     return render_template("demo.html")
-@app.route('/')
-def first() :
-    # db.create_all()
-    return render_template("index1.html")
-
-# def last():
-#     j=shelf(user=sname,title=details)
-#     db.session.add(j)
-#     db.session.commit()
-    
-        
-
-
-
-@app.route('/form1')
-def form1():
-    return render_template("form1.html")
-
-@app.route('/form2',methods=["POST"])
-def form2():
-    session['name']=request.form.get("name")
-    salt = uuid.uuid4().hex
-    password=request.form.get("password")
-    #PASS=hashlib.sha512(password.encode('utf-8') + salt.encode('utf-8')).hexdigest()
-    emailid=request.form.get("emailid")
-    phoneNo=request.form.get("phonenumber")
-    dob=request.form.get("birthday")
-    # today=date.today()
-    # now = datetime.now()
-
-    f=datetime.now()
-    # current_time = now.strftime("%H:%M:%S")
-    m=Test(username=session['name'],password=password,email=emailid,phone=phoneNo,dob=dob,timestamp=f)
-    db.session.add(m)
-    db.session.commit()
-
-    # s=Session()
-    
-    
-
-    return render_template("hello.html",names=session['name'])
-
-    # m=Test("Sam","123","samswaroop97@gmail.com","9515226365","18-11-1997")
-    # db.session.add(m)
-    # db.session.commit()
-
-@app.route('/form3')
-def form3():
-    return render_template("form2.html")
-
-@app.route('/login',methods=["POST"])
-def login():
-    #name=request.form.get("name")
-    session['name']=request.form.get("name")
-    salt = uuid.uuid4().hex
-    password=request.form.get("password")
-    # PASS=hashlib.sha512(password.encode('utf-8') + salt.encode('utf-8')).hexdigest()
-    users=Test.query.all()
-    for user in users:
-        j=user.username
-        k=user.password
-        if 'name' in session and k==password:
-            return render_template("hello.html",names=session['name'])
-        else:
-            # flash('Invalid user')
-            continue
-    flag=1
-    return render_template("form1.html",flag=flag)
-    # return redirect(url_for('index'))
-
-
-@app.route('/logout')
-def logout():
-    session.pop("name", None)
-
-
-    return render_template("first.html")
-
-
-# @app.route('/index')
-# def index():
-    
-#     if 'name' in session:
-#         return 'Logged in as %s' % escape(session['name'])
-#     return 'You are not logged in'
-
-
-# @app.route('/logout')
-# def logout():
-#     session.pop('name',None)
-#     return redirect(url_for('index'))
-
-
-@app.route('/admin')
-def admin():
-    
-    return render_template("admin.html",users=Test.query.all())
-
-
-
-    
-    # current_time = now.strftime("%H:%M:%S")
-    
-    # return render_template("hello.html",users=Test.query.all(),names=name,passwords=password)
-
-
-@app.route('/search',methods=["POST"])
+@app.route("/api/search", methods=['GET', 'POST'])
 def search():
-    name=request.form.get("search")
-    # usr=Admin.query.filter(Admin.isbn.like(f'{name}%'))
-    # print(usr)
-    return render_template('hello.html',users=Admin.query.all(),name=name)
+    keyword=request.form.get('search')
+    s = Admin.query.all()
+    print(keyword)
+    r = []
+    
+    # data=request.get_json()
+    # keyword=data.get("search")
+    # code=keyword.status_codes
+    # print(code)
+    # if code==404:
+    #     return jsonify({"error":"no books info found"}), 404
 
 
-@app.route('/details/<string:id>')
-def details(id):
-    print(id)
-    # details=Admin.query.get(f'{id}')
-    usr=Admin.query.all()
-    for i in usr:
-        if id == i.isbn:
-            s=i.isbn
-            p=i.author
-            d=i.year
-            e=i.title
-
-    return render_template('details.html',details=e,s=s,p=p,d=d)
-
-@app.route('/details1/<string:s>/<string:details>/<string:sname>', methods=['POST'])
-def details1(s,details,sname):
-    #usr=request.form.get('user')
-    flag1=0
     flag=0
-    star=request.form.get('stars')
-    name=request.form.get('review')
-    response= request.form.get('shelf')
-    a=Review.query.all()
-    for i in a:
-        if i.user==sname and i.isbn==s:
-            return render_template('hello.html',flag=1)
-   
-    g=Review(user=sname,isbn=s,rating=star,review=name)
-    db.session.add(g)
-    db.session.commit()
-    if response=="Yes":
-        j=shelf(user=sname,title=details)
-        db.session.add(j)
-        db.session.commit()
-        return render_template('rating.html',s=s,details=details,sname=sname)
-    else:
-        return render_template('rating.html',s=s,details=details,sname=sname)
-
-    
-    return render_template('rating.html',s=s,details=details,sname=sname)
-
-
-@app.route('/last/<string:title>')
-def last(title):
-    j=shelf(user=session['name'],title=title)
-    db.session.add(j)
-    db.session.commit()
-    return render_template('hello.html')
-
-
-
-
-# @app.route('/last')
-# def last():
-#     j=shelf(user=sname,title=details)
-#     db.session.add(j)
-#     db.session.commit()
-
-
-
-
-
-
-@app.route('/bookshelf/<string:names>', methods=['POST'])
-def bookshelf(names):
-    s=shelf.query.all()
-
-    return render_template("hello.html",n=names,u=s)
-
-
-@app.route('/delete/<string:id>')
-def delete(id):
-    print(id)
-    s=shelf.query.all()
+    # for j in s:
+    #     if keyword==None or keyword=="":
+    #         return jsonify({"no books found":"no books info found"}),404 
+    # if  keyword=="":
+    #     return jsonify({"error":"Invalid input"}),404 
     for i in s:
-        if i.user==session['name'] and i.title==id:
-            shelf.query.filter(shelf.user==session['name'],shelf.title==id).delete()
-            db.session.commit()
-    return render_template('hello.html',u=s,n=session['name'])
+        g = {}
+
+        # if i.isbn != keyword or i.title != keyword or i.author != keyword or i.year != keyword:
+        #     print("Hello2")
+        #     # return jsonify({"error":"no books info found"}), 404
+        #     g['error']="No books found"
+        #     r.append(g)
+            
 
 
+        if i.isbn == keyword or i.title == keyword or i.author == keyword or i.year == keyword:
+            g['isbn'] = i.isbn
+            g['title'] = i.title
+            g['author'] = i.author
+            g['year'] = i.year
+            r.append(g)
+            flag=1
+            # print("Hello1")
+            
+
+        # if flag==0:
+        #     return jsonify({'books': r}), 200
+    # if flag==0:
+    #     return jsonify({"error":"no books info found"}), 404
 
 
-@app.route('/home')
-def home():
-    d=shelf.query.all()
-    return render_template('hello.html')
+    f=len(r)
+    return render_template('results.html',results=r,flag=flag,f=f)
 
-# @app.route('/last/<string:sname>/<string:details>')
-# def last(sname,details):
-#     j=shelf(user=sname,title=details)
-#     db.session.add(j)
-#     db.session.commit()
-#     redirect('details')
+@app.route("/api/reviews", methods=['GET', 'POST'])
+def reviews():
+    usr=request.form.get('username')
+    d=Review.query.all()
+    g=[]
+    flag=0
+    for i in d:
+        h={}
+        if i.user==usr:
+            h["isbn"]=i.isbn
+            h["rating"]=i.rating
+            h["review"]=i.review
+            flag=1
+            g.append(h)
+    l=len(g)
     
-
-
-
-
-
-
-if __name__ == "__main__" :
-
-    with app.app_context() :
-        main()
-
-
-
-    
+    return render_template('review.html',usr=usr,l=l,flag=flag,results=g)
+    # return jsonify({"reviews":g}),200
 
 
 
